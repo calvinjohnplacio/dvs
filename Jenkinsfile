@@ -27,9 +27,11 @@ pipeline {
                 sh '''
                 echo "Setting up Python environment..."
 
+                # Create virtual environment
                 python3 -m venv venv
-                . venv/bin/activate
 
+                # Install required Python dependencies
+                . venv/bin/activate
                 pip install --upgrade pip
                 pip install -r requirements.txt
                 '''
@@ -41,6 +43,7 @@ pipeline {
                 sh '''
                 echo "Running Selenium tests..."
 
+                # Activate virtual environment and run the test
                 . venv/bin/activate
                 python test.py
                 '''
