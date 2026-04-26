@@ -2,13 +2,12 @@ pipeline {
     agent any
 
     environment {
-        GIT_REPO_URL = 'https://github.com/calvinjohnplacio/dvs.git'
-        GIT_CREDENTIALS_ID = 'github-pat'
-        GIT_BRANCH = 'main'
+        GIT_REPO_URL = 'https://github.com/calvinjohnplacio/dvs.git'  // Your repo URL
+        GIT_CREDENTIALS_ID = 'github-pat'  // Replace with your actual credentials ID in Jenkins
+        GIT_BRANCH = 'main'  // The branch you want to checkout
     }
 
     stages {
-
         stage('Checkout SCM') {
             steps {
                 checkout scm: [
@@ -30,10 +29,10 @@ pipeline {
                 # Create virtual environment
                 python3 -m venv venv
 
-                # Install required Python dependencies
+                # Activate virtual environment and install dependencies
                 . venv/bin/activate
                 pip install --upgrade pip
-                pip install -r requirements.txt
+                pip install -r requirements.txt  # Install dependencies, including selenium and webdriver-manager
                 '''
             }
         }
@@ -43,9 +42,9 @@ pipeline {
                 sh '''
                 echo "Running Selenium tests..."
 
-                # Activate virtual environment and run the test
+                # Activate virtual environment before running the test
                 . venv/bin/activate
-                python test.py
+                python test.py  # Run your test script
                 '''
             }
         }
