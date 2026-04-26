@@ -24,7 +24,7 @@ driver_path = ChromeDriverManager().install()  # Install and get the path of the
 service = Service(executable_path=driver_path)
 
 # Create the WebDriver instance with the Service and options
-driver = webdriver.Chrome(service=service, options=options)  # Use the Service to pass the executable path
+driver = webdriver.Chrome(service=service, options=options)
 
 try:
     # Open the local file
