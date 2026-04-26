@@ -9,53 +9,38 @@ pipeline {
 
     stages {
 
-        stage('Checkout SCM') {
+        stage('Checkout') {
             steps {
-                checkout scm: [
-                    $class: 'GitSCM',
-                    branches: [[name: "*/${env.GIT_BRANCH}"]],
-                    userRemoteConfigs: [[
-                        url: "${env.GIT_REPO_URL}",
-                        credentialsId: "${env.GIT_CREDENTIALS_ID}"
-                    ]]
-                ]
+                git branch: "${env.GIT_BRANCH}",
+                    url: "${env.GIT_REPO_URL}",
+                    credentialsId: "${env.GIT_CREDENTIALS_ID}"
             }
         }
 
-        stage('Setup Python Environment') {
+        stage('Setup Python') {
             steps {
                 sh '''
-                echo "Setting up Python environment..."
-
                 python3 -m venv venv
                 . venv/bin/activate
-
                 pip install --upgrade pip
-                pip install -r requirments.txt
+                pip install selenium
                 '''
             }
         }
 
-        stage('Run Selenium Test') {
+        stage('Run Test') {
             steps {
                 sh '''
-                echo "Running Selenium tests..."
-
                 . venv/bin/activate
                 python test.py
                 '''
             }
         }
 
-        stage('Deploy to Apache') {
+        stage('Deploy') {
             steps {
                 sh '''
-                echo "Deploying FULL PHP project to Apache..."
-
-                # Sync all files (NEW + UPDATED + DELETED)
-                sudo rsync -av -o --delete ./ /var/www/html/
-
-                # Fix ownership
+                sudo rsync -av --delete ./ /var/www/html/
                 sudo chown -R www-data:www-data /var/www/html/
                 '''
             }
@@ -64,13 +49,10 @@ pipeline {
 
     post {
         success {
-            echo "CI/CD SUCCESS ✔ Deployment completed"
+            echo "CI/CD SUCCESS ✔"
         }
         failure {
-            echo "CI/CD FAILED ❌ Check logs"
-        }
-        always {
-            cleanWs()
+            echo "CI/CD FAILED ❌"
         }
     }
 }
